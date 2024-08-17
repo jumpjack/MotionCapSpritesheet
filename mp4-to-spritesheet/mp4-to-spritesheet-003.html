@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MP4 Frame Extractor</title>
+    <style>
+        canvas {
+            border: 1px solid black;
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>MP4 Frame Extractor</h1>
+
+<!-- Input video file -->
+<label for="fileInput">Upload MP4: </label>
+<input type="file" id="fileInput" accept="video/mp4"><br>
+
+<!-- Offset inputs -->
+<label for="xOffset">X Offset: </label>
+<input type="number" id="xOffset" value="0"><br>
+<label for="yOffset">Y Offset: </label>
+<input type="number" id="yOffset" value="0"><br>
+
+<!-- "In place" checkboxes -->
+<label for="horizontalInPlace">Horizontal In Place (center frames horizontally): </label>
+<input type="checkbox" id="horizontalInPlace"><br>
+<label for="verticalInPlace">Vertical In Place (center frames vertically): </label>
+<input type="checkbox" id="verticalInPlace"><br>
+
+<!-- Frame range inputs -->
+<label for="startFrame">Start Frame: </label>
+<input type="number" id="startFrame" value="0" min="0"><br>
+<label for="endFrame">End Frame: </label>
+<input type="number" id="endFrame" value="10" min="1"><br>
+
+<!-- Slider for resizing frames -->
+<label for="resizeSlider">Resize frames (5% - 100%): </label>
+<input type="range" id="resizeSlider" min="5" max="100" value="10">
+<span id="resizePercentage">10%</span><br>
+
+<!-- Info about the video -->
+<p id="videoInfo">Video dimensions: <span id="dimensions"></span></p>
+<p>Total frames: <span id="totalFrames"></span></p>
+
+<!-- Button to refresh the frame extraction -->
+<button id="refreshBtn">Refresh Frames</button>
+
+<!-- Button to create spritesheet -->
+<button id="createSpritesheetBtn">Create Spritesheet</button>
+
+<!-- Canvas to display the animation -->
+<h2>Animation</h2>
+<canvas id="animationCanvas"></canvas>
+
+<!-- Canvas to display the spritesheet -->
+<h2>Spritesheet</h2>
+<canvas id="spritesheetCanvas"></canvas>
+
+<!-- Container to show all frames -->
+<h2>Frames</h2>
+<div id="framesContainer"></div>
+
+<script>
+    const fileInput = document.getElementById('fileInput');
+    const xOffsetInput = document.getElementById('xOffset');
+    const yOffsetInput = document.getElementById('yOffset');
+    const horizontalInPlaceCheckbox = document.getElementById('horizontalInPlace');
+    const verticalInPlaceCheckbox = document.getElementById('verticalInPlace');
+    const startFrameInput = document.getElementById('startFrame');
+    const endFrameInput = document.getElementById('endFrame');
+    const resizeSlider = document.getElementById('resizeSlider');
+    const resizePercentage = document.getElementById('resizePercentage');
+    const videoInfo = document.getElementById('videoInfo');
+    const dimensionsSpan = document.getElementById('dimensions');
+    const totalFramesSpan = document.getElementById('totalFrames');
+    const animationCanvas = document.getElementById('animationCanvas');
+    const spritesheetCanvas = document.getElementById('spritesheetCanvas');
+    const framesContainer = document.getElementById('framesContainer');
+    const refreshBtn = document.getElementById('refreshBtn');
+    const createSpritesheetBtn = document.getElementById('createSpritesheetBtn');
+
+    let video = document.createElement('video');
+    let frames = [];
+    let frameWidth, frameHeight;
+
+    fileInput.addEventListener('change', handleFileUpload);
+    resizeSlider.addEventListener('input', () => {
+        resizePercentage.textContent = `${resizeSlider.value}%`;
+    });
+    refreshBtn.addEventListener('click', refreshFrames);
+
+    function handleFileUpload(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const url = URL.createObjectURL(file);
+        video.src = url;
+
+        video.addEventListener('loadeddata', () => {
+            frameWidth = video.videoWidth;
+            frameHeight = video.videoHeight;
+            dimensionsSpan.textContent = `${frameWidth}x${frameHeight}`;
+            refreshFrames();
+        });
+    }
+
+    async function refreshFrames() {
+        const startFrame = parseInt(startFrameInput.value);
+        const endFrame = parseInt(endFrameInput.value);
+        const fps = 24; // Assuming 24 frames per second for extraction
+        const duration = video.duration;
+        const maxFrames = Math.floor(fps * duration);
+        const validEndFrame = Math.min(endFrame, maxFrames - 1);
+
+        const numFrames = validEndFrame - startFrame + 1;
+        totalFramesSpan.textContent = numFrames;
+        frames = [];
+
+        framesContainer.innerHTML = ''; // Clear the frames container
+
+        for (let i = startFrame; i <= validEndFrame; i++) {
+            await extractFrameAt(i / fps, i - startFrame); // Pass frame index
+        }
+
+        createAnimation();
+    }
+
+    function extractFrameAt(time, frameIndex) {
+        return new Promise((resolve) => {
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+            canvas.width = frameWidth;
+            canvas.height = frameHeight;
+
+            video.currentTime = time;
+
+            video.addEventListener('seeked', function captureFrame() {
+                context.drawImage(video, 0, 0, frameWidth, frameHeight);
+
+                const frame = canvas.toDataURL();
+                frames.push(frame);
+
+                const xOffset = parseInt(xOffsetInput.value);
+                const yOffset = parseInt(yOffsetInput.value);
+
+                const resizeFactor = resizeSlider.value / 100;
+                const resizedWidth = frameWidth * resizeFactor;
+                const resizedHeight = frameHeight * resizeFactor;
+
+                const frameCanvas = document.createElement('canvas');
+                frameCanvas.width = resizedWidth;
+                frameCanvas.height = resizedHeight;
+
+                const frameContext = frameCanvas.getContext('2d');
+
+                let dynamicXOffset = xOffset;
+                let dynamicYOffset = yOffset;
+
+                if (horizontalInPlaceCheckbox.checked) {
+                    dynamicXOffset = xOffset - (frameIndex * xOffset); // Apply horizontal dynamic offset
+                }
+                if (verticalInPlaceCheckbox.checked) {
+                    dynamicYOffset = yOffset - (frameIndex * yOffset); // Apply vertical dynamic offset
+                }
+
+                frameContext.drawImage(canvas, dynamicXOffset, dynamicYOffset, resizedWidth, resizedHeight);
+
+                framesContainer.appendChild(frameCanvas);
+
+                video.removeEventListener('seeked', captureFrame);
+                resolve(); // Resolve the promise once the frame is captured
+            }, { once: true });
+        });
+    }
+
+    function createAnimation() {
+        const context = animationCanvas.getContext('2d');
+        const resizeFactor = resizeSlider.value / 100;
+        animationCanvas.width = frameWidth * resizeFactor;
+        animationCanvas.height = frameHeight * resizeFactor;
+
+        let frameIndex = 0;
+
+        function animate() {
+            const img = new Image();
+            img.src = frames[frameIndex];
+            img.onload = () => {
+                context.clearRect(0, 0, animationCanvas.width, animationCanvas.height);
+                const xOffset = parseInt(xOffsetInput.value);
+                const yOffset = parseInt(yOffsetInput.value);
+
+                let dynamicXOffset = xOffset;
+                let dynamicYOffset = yOffset;
+
+                if (horizontalInPlaceCheckbox.checked) {
+                    dynamicXOffset = xOffset - (frameIndex * xOffset);
+                }
+                if (verticalInPlaceCheckbox.checked) {
+                    dynamicYOffset = yOffset - (frameIndex * yOffset);
+                }
+
+                context.drawImage(img, dynamicXOffset, dynamicYOffset, animationCanvas.width, animationCanvas.height);
+
+                frameIndex = (frameIndex + 1) % frames.length;
+                requestAnimationFrame(animate);
+            };
+        }
+
+        animate();
+    }
+
+    createSpritesheetBtn.addEventListener('click', createSpritesheet);
+
+    function createSpritesheet() {
+        const resizeFactor = resizeSlider.value / 100;
+        const context = spritesheetCanvas.getContext('2d');
+        spritesheetCanvas.width = frameWidth * resizeFactor * frames.length;
+        spritesheetCanvas.height = frameHeight * resizeFactor;
+
+        frames.forEach((frame, index) => {
+            const img = new Image();
+            img.src = frame;
+            img.onload = () => {
+                context.drawImage(img, index * frameWidth * resizeFactor, 0, frameWidth * resizeFactor, frameHeight * resizeFactor);
+            };
+        });
+    }
+</script>
+
+</body>
+</html>
+
