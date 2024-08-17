@@ -1,3 +1,20 @@
+The original project was about a python program to create animations of custom-drawn characters from motion-captur.
+
+In this project I will try turning the final resulting animation into a spritesheet, for easy import in your game.
+
+The original repo also linked to an [online version](https://sketch.metademolab.com/) of the SW, much better than downloading and installing bunch of things...
+
+Unfortunately, although the final result is a very smooth animation based on motion captur of a real person, the output formats are:
+
+- a realtime updated canvas
+- a .mp4 clip
+
+And in both of them the character is moving rightwards, rather than staying centered in the frame, so it's not directly possible to extract frames for a spritesheet.
+
+
+
+------- ORIGINAL README FILE ----------
+
 # Animated Drawings
 
 ![Sequence 02](https://user-images.githubusercontent.com/6675724/219223438-2c93f9cb-d4b5-45e9-a433-149ed76affa6.gif)
@@ -280,11 +297,7 @@ render.start('./examples/config/mvc/four_legs_example.yaml')
 ### Creating Your Own Config Files
 If you want to create your own config files, see the [configuration file documentation](examples/config/README.md).
 
-## Browser-Based Demo
 
-If you'd like to animate a drawing of your own, but don't want to deal with downloading code and using the command line, check out our browser-based demo:
-
-[www.sketch.metademolab.com](https://sketch.metademolab.com/)
 
 ## Paper & Citation
  If you find the resources in this repo helpful, please consider citing the accompanying paper, [A Method for Animating Children's Drawings of The Human Figure](https://dl.acm.org/doi/10.1145/3592788)).
