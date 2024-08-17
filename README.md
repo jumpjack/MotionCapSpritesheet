@@ -1,5 +1,7 @@
 ![image](https://github.com/user-attachments/assets/fdc6c444-24ec-4cbe-afba-eabd4b8eaec4)
 
+Also known as "animated drawings by META".
+
 
 The original project was about a python program to create animations of custom-drawn characters from motion-captur.
 
@@ -28,6 +30,7 @@ It would be interesting to be able to use/upload custom BVH files, there is a to
 - [BVH archive](https://sites.google.com/a/cgspeed.com/cgspeed/motion-capture?authuser=0)
 - [Adobe Mixamo 3d animator](https://www.mixamo.com/#/?genres=Adventure&page=1&query=walk)
 - [Sketchfab](https://sketchfab.com/search?features=downloadable+animated&q=character+&type=models) - Free 3d characters usable with Mixamo
+- [AI generated speech and audio effects](https://audiobox.metademolab.com/storymaker/demo)
 
 
 ------- ORIGINAL README FILE ----------
