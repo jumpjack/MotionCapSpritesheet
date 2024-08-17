@@ -1,3 +1,6 @@
+![image](https://github.com/user-attachments/assets/fdc6c444-24ec-4cbe-afba-eabd4b8eaec4)
+
+
 The original project was about a python program to create animations of custom-drawn characters from motion-captur.
 
 In this project I will try turning the final resulting animation into a spritesheet, for easy import in your game.
@@ -11,6 +14,16 @@ Unfortunately, although the final result is a very smooth animation based on mot
 
 And in both of them the character is moving rightwards, rather than staying centered in the frame, so it's not directly possible to extract frames for a spritesheet.
 
+## Future upgrades
+
+It would be interesting to be able to use/upload custom BVH files, there is a ton of free BVH files available [here](https://sites.google.com/a/cgspeed.com/cgspeed/motion-capture?authuser=0).
+
+## Further free resources
+
+- [Rokoko studio](https://www.rokoko.com/products/studio/download) (free version available) for motion captur
+- [BVH archive](https://sites.google.com/a/cgspeed.com/cgspeed/motion-capture?authuser=0)
+- [Adobe Mixamo 3d animator](https://www.mixamo.com/#/?genres=Adventure&page=1&query=walk)
+- [Sketchfab](https://sketchfab.com/search?features=downloadable+animated&q=character+&type=models) - Free 3d characters usable with Mixamo
 
 
 ------- ORIGINAL README FILE ----------
