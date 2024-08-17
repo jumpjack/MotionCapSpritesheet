@@ -18,7 +18,7 @@ And in both of them the character is moving rightwards, rather than staying cent
 
 ## Github pages demo?
 
-- https://jumpjack.github.io/MotionCapSpritesheet/examples/fixer_app
+- https://github.com/jumpjack/MotionCapSpritesheet/blob/main/mp4-to-spritesheet/mp4-to-spritesheet-004.html
 
 ## Future upgrades
 
