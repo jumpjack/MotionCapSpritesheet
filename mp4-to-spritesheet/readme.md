@@ -1,6 +1,6 @@
 Converts a .mp4 file created by [Animated Drawings](https://sketch.metademolab.com/canvas) into single images and spritesheet.
 
-Made with [ChatGPT-4o (and 3.5] when 40 is tired...)(https://chatgpt.com/share/dc5aec46-329a-4427-b794-fc95f50de18d).
+Made with [ChatGPT-4o (and 3.5 when 4o is tired...)](https://chatgpt.com/share/dc5aec46-329a-4427-b794-fc95f50de18d).
 
 **Work in progress**
 
