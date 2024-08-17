@@ -14,6 +14,10 @@ Unfortunately, although the final result is a very smooth animation based on mot
 
 And in both of them the character is moving rightwards, rather than staying centered in the frame, so it's not directly possible to extract frames for a spritesheet.
 
+## Github ppges demo?
+
+- https://jumpjack.github.io/MotionCapSpritesheet/examples/fixer_app
+
 ## Future upgrades
 
 It would be interesting to be able to use/upload custom BVH files, there is a ton of free BVH files available [here](https://sites.google.com/a/cgspeed.com/cgspeed/motion-capture?authuser=0).
