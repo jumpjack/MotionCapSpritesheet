@@ -5,8 +5,8 @@ Made with ChatGPT-4o and 3.5.
 **Work in progress**
 
 Demos:
-- 001
-- 002
-- 003
-- 004
+- [001](https://jumpjack.github.io/MotionCapSpritesheet/mp4-to-spritesheet/mp4-to-spritesheet-001.html)
+- [002](https://jumpjack.github.io/MotionCapSpritesheet/mp4-to-spritesheet/mp4-to-spritesheet-002.html)
+- [003](https://jumpjack.github.io/MotionCapSpritesheet/mp4-to-spritesheet/mp4-to-spritesheet-003.html)
+- [004](https://jumpjack.github.io/MotionCapSpritesheet/mp4-to-spritesheet/mp4-to-spritesheet-004.html)
 - 
