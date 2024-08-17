@@ -16,7 +16,7 @@ Unfortunately, although the final result is a very smooth animation based on mot
 
 And in both of them the character is moving rightwards, rather than staying centered in the frame, so it's not directly possible to extract frames for a spritesheet.
 
-## Github ppges demo?
+## Github pages demo?
 
 - https://jumpjack.github.io/MotionCapSpritesheet/examples/fixer_app
 
@@ -30,7 +30,14 @@ It would be interesting to be able to use/upload custom BVH files, there is a to
 - [BVH archive](https://sites.google.com/a/cgspeed.com/cgspeed/motion-capture?authuser=0)
 - [Adobe Mixamo 3d animator](https://www.mixamo.com/#/?genres=Adventure&page=1&query=walk)
 - [Sketchfab](https://sketchfab.com/search?features=downloadable+animated&q=character+&type=models) - Free 3d characters usable with Mixamo
-- [AI generated speech and audio effects](https://audiobox.metademolab.com/storymaker/demo)
+- [Audiobox - AI generated speech and audio effects](https://audiobox.metademolab.com/storymaker/demo)
+- [BVH motion caotur datasets](https://sites.google.com/a/cgspeed.com/cgspeed/motion-capture?authuser=0)
+
+## 2d spritesheet generators
+
+- [Vitruvian Studio](https://vitruvianstudio.github.io/)
+- [Universal LPC Spritesheet Generator](https://sanderfrenken.github.io/Universal-LPC-Spritesheet-Character-Generator/#?body=Body_color_light&head=Human_male_light)
+- [LPC character generator (downloadable exe)](https://pflat.itch.io/lpc-character-generator)
 
 
 ------- ORIGINAL README FILE ----------
