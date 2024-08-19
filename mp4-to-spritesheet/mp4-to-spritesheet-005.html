@@ -14,18 +14,23 @@
 </head>
 <body>
 
-<h1>MP4 Frame Extractor</h1>
-
+<center><big><big><big>MP4 to spritesheet converter</big></big></big><br>
+Extract frames from MP4 video exported from <a href="https://sketch.metademolab.com/canvas">Animate Drawings by Meta</a><br>
+<i> Input pre-tuned for better results with animation "walking", n.5</i><br>
+<a href="https://github.com/jumpjack/MotionCapSpritesheet/tree/main/mp4-to-spritesheet">Source code</a><br><br>
+</center>
 <!-- Input video file -->
 <label for="fileInput">Upload MP4: </label>
-<input type="file" id="fileInput" accept="video/mp4">
-<p id="videoFileInfo"></p><br>
+<input type="file" id="fileInput" accept="video/mp4"><br>
+
+<!-- Info about the video -->
+Frame size: <span id="dimensions"></span><br>
+Total frames: <span id="totalFrames"></span><br><br>
 
 <!-- Offset inputs -->
-<label for="xOffset">X Offset: </label>
-<input type="number" id="xOffset" value="1"><br>
-<label for="yOffset">Y Offset: </label>
-<input type="number" id="yOffset" value="0"><br>
+Offsets:
+ X=<input type="number" id="xOffset" value="2.2" style="width:40px;">, Y= 
+<input type="number" id="yOffset" value="0"  style="width:40px;"><br>
 
 <!-- "In place" checkboxes -->
 <label for="horizontalInPlace">Horizontal In Place (center frames horizontally): </label>
@@ -34,49 +39,56 @@
 <input type="checkbox" id="verticalInPlace"><br>
 
 <!-- Frame range inputs -->
-<label for="startFrame">Start Frame: </label>
-<input type="number" id="startFrame" value="50" min="0"><br>
-<label for="endFrame">End Frame: </label>
-<input type="number" id="endFrame" value="90" min="1"><br>
+Frames range: Start=<input type="number" id="startFrame" value="50" min="0" style="width:40px;">, End=<input type="number" id="endFrame" value="73" min="1" style="width:40px;">
+
+<!-- Button to refresh the frame extraction -->
+<button id="refreshBtn">Refresh Frames</button>
+
+<!-- Button to remove identical frames -->
+<button id="removeIdenticalBtn">Remove Identical Frames</button><br>
+
 
 <!-- Slider for resizing frames -->
 <label for="resizeSlider">Resize frames (5% - 100%): </label>
 <input type="range" id="resizeSlider" min="5" max="100" value="30">
 <span id="resizePercentage">10%</span><br>
 
-<!-- Info about the video -->
-<p id="videoInfo">Video dimensions: <span id="dimensions"></span></p>
-<p>Total frames: <span id="totalFrames"></span></p>
 
-<!-- Button to refresh the frame extraction -->
-<button id="refreshBtn">Refresh Frames</button>
 
-<!-- Button to create spritesheet -->
-<button id="createSpritesheetBtn">Create Spritesheet</button>
-
-<!-- Button to remove identical frames -->
-<button id="removeIdenticalBtn">Remove Identical Frames</button>
 
 <!-- Controls for animation -->
 <h2>Animation</h2>
-<canvas id="animationCanvas"></canvas><br>
-<!-- Button to export the animation as GIF -->
-<button id="exportGifBtn">Export as GIF</button>
-<a id="downloadGifLink" download="animation.gif">Download GIF</a><br>
+
+<!-- Slider to control animation speed -->
+<label for="speedSlider">Animation Speed: </label>
+<input type="range" id="speedSlider" min="1" max="2000" value="50">
+<span id="speedValue">50 ms</span><br>
 
 <button id="prevFrameBtn">Previous Frame</button>
 <button id="pauseBtn">Pause</button>
 <button id="playBtn">Play</button>
-<button id="nextFrameBtn">Next Frame</button>
+<button id="nextFrameBtn">Next Frame</button><br>
 
+<canvas id="animationCanvas"></canvas><br>
 <p>Current Frame: <span id="currentFrame"></span></p>
+
+
+<!-- Button to create spritesheet -->
+<button id="createSpritesheetBtn">Create Spritesheet</button><br>
+
+
+<!-- Button to export the animation as GIF -->
+<button id="exportGifBtn">Export as GIF</button>
+<a id="downloadGifLink" download="animation.gif">Download GIF</a> (beta)<br>
+
+
 
 <!-- Canvas to display the spritesheet -->
 <h2>Spritesheet</h2>
 <canvas id="spritesheetCanvas"></canvas>
 
 <!-- Container to show all frames -->
-<h2>Frames</h2>
+<h2>Single frames</h2>
 <div id="framesContainer"></div>
 
 <script>
@@ -109,7 +121,7 @@ const exportGifBtn = document.getElementById('exportGifBtn');
 const downloadGifLink = document.getElementById('downloadGifLink');
 
 exportGifBtn.addEventListener('click', exportAsGif);
-
+createSpritesheetBtn.addEventListener('click', createSpritesheet);
 function exportAsGif() {
 console.log(1);
     const resizeFactor = resizeSlider.value / 100;
@@ -131,8 +143,8 @@ console.log("frame");
             tempCanvas.height = frameHeight * resizeFactor;
             const tempContext = tempCanvas.getContext('2d');
 
-            const xOffset = parseInt(xOffsetInput.value);
-            const yOffset = parseInt(yOffsetInput.value);
+            const xOffset = parseFloat(xOffsetInput.value);
+            const yOffset = parseFloat(yOffsetInput.value);
             const isHorizontalInPlace = horizontalInPlaceCheckbox.checked;
             const isVerticalInPlace = verticalInPlaceCheckbox.checked;
 
@@ -201,14 +213,16 @@ console.log(gif);
             dimensionsSpan.textContent = `${frameWidth}x${frameHeight}`;
             totalFrames = Math.floor(video.duration * 24); // Assuming 24 FPS
             totalFramesSpan.textContent = totalFrames;
-            videoFileInfo.textContent = `${file.name} - Total Frames: ${totalFrames}`;
+            //videoFileInfo.textContent = `${file.name} - Total Frames: ${totalFrames}`;
             refreshFrames();
-        });
+        }); 
     }
 
     async function refreshFrames() {
-        const startFrame = parseInt(startFrameInput.value);
-        const endFrame = parseInt(endFrameInput.value);
+        stopAnimation();
+    
+        const startFrame = parseFloat(startFrameInput.value);
+        const endFrame = parseFloat(endFrameInput.value);
         const fps = 24;
         const validEndFrame = Math.min(endFrame, totalFrames - 1);
 
@@ -276,56 +290,69 @@ console.log(gif);
     }
     
     
+const speedSlider = document.getElementById('speedSlider');
+const speedValue = document.getElementById('speedValue');
+let animationDelay = speedSlider.value; // Initial delay in milliseconds
+
+// Update speed value in the UI when slider is changed
+speedSlider.addEventListener('input', function() {
+    animationDelay = parseInt(this.value);
+    speedValue.textContent = `${animationDelay} ms`;
+});
+
 function createAnimation() {
     const context = animationCanvas.getContext('2d');
     const resizeFactor = resizeSlider.value / 100;
     animationCanvas.width = frameWidth * resizeFactor;
     animationCanvas.height = frameHeight * resizeFactor;
 
-    const xOffset = parseInt(xOffsetInput.value);
-    const yOffset = parseInt(yOffsetInput.value);
+    const xOffset = parseFloat(xOffsetInput.value);
+    const yOffset = parseFloat(yOffsetInput.value);
     const isHorizontalInPlace = horizontalInPlaceCheckbox.checked;
     const isVerticalInPlace = verticalInPlaceCheckbox.checked;
 
-    animationFrameIndex = 0;
+    let animationFrameIndex = 0;
 
     function animate() {
         if (!isPlaying) return; // Only animate if playing
 
         const img = new Image();
         img.src = frames[animationFrameIndex];
+
         img.onload = () => {
             context.clearRect(0, 0, animationCanvas.width, animationCanvas.height);
 
-            // Calculate offsets based on "in place" settings
             let dynamicXOffset = 0;
             let dynamicYOffset = 0;
 
             if (isHorizontalInPlace) {
-                dynamicXOffset = -(animationFrameIndex * xOffset); // Apply horizontal dynamic offset
+                dynamicXOffset = -(animationFrameIndex * xOffset);
             } else {
                 dynamicXOffset = xOffset;
             }
 
             if (isVerticalInPlace) {
-                dynamicYOffset = -(animationFrameIndex * yOffset); // Apply vertical dynamic offset
+                dynamicYOffset = -(animationFrameIndex * yOffset);
             } else {
                 dynamicYOffset = yOffset;
             }
 
-            // Apply the resizing factor
             const resizedWidth = frameWidth * resizeFactor;
             const resizedHeight = frameHeight * resizeFactor;
 
             context.drawImage(img, dynamicXOffset, dynamicYOffset, resizedWidth, resizedHeight);
             currentFrameSpan.textContent = `${animationFrameIndex + 1} (${parseInt(startFrameInput.value) + animationFrameIndex})`;
+
+            animationFrameIndex = (animationFrameIndex + 1) % frames.length;
         };
 
-        animationFrameIndex = (animationFrameIndex + 1) % frames.length;
-        animationRequestId = requestAnimationFrame(animate);
+        setTimeout(() => {
+            if (isPlaying) {
+                requestAnimationFrame(animate);
+            }
+        }, animationDelay); // Use the value from the speed slider for delay
     }
 
-    // Stop any ongoing animation before starting a new one
     stopAnimation();
     isPlaying = true;
     animate();
