@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GIF Export Example</title>
+</head>
+<body>
+
+<h1>Export GIF</h1>
+
+<!-- Button to export GIF -->
+<button id="exportGifBtn">Export GIF</button>
+
+<!-- Link to download GIF -->
+<a id="downloadGifLink" href="#" download="animation.gif" style="display: none;">Download GIF</a>
+
+<!-- Include GIF.js library -->
+<script src="https://cdn.jsdelivr.net/npm/gif.js@0.2.0/dist/gif.js"></script>  
+
+<script>
+    const exportGifBtn = document.getElementById('exportGifBtn');
+    const downloadGifLink = document.getElementById('downloadGifLink');
+
+    function exportAsGif() {
+        const gif = new GIF({
+            workers: 2,
+            quality: 10,
+            width: 300, // Adjust as needed
+            height: 300  // Adjust as needed
+        });
+
+        // Example frame data (replace with actual frame data)
+        const frames = ['001.png', '002.png', '003.png']; // Replace with your frame data
+
+        frames.forEach((frameSrc) => {
+            const img = new Image();
+            img.src = frameSrc;
+
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                canvas.width = 300; // Adjust as needed
+                canvas.height = 300; // Adjust as needed
+                const context = canvas.getContext('2d');
+                context.drawImage(img, 0, 0);
+                gif.addFrame(canvas, { delay: 500 }); // Adjust delay as needed
+                if (frames.indexOf(frameSrc) === frames.length - 1) {
+                    gif.on('finished', function(blob) {
+                        const url = URL.createObjectURL(blob);
+                        downloadGifLink.href = url;
+                        downloadGifLink.style.display = 'block'; // Show download link
+                    });
+                    gif.render();
+                }
+            };
+        });
+    }
+
+    exportGifBtn.addEventListener('click', exportAsGif);
+</script>
+
+</body>
+</html>
+
