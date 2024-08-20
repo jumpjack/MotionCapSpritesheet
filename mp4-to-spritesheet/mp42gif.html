@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video to GIF Converter</title>
+    <script src="https://cdn.jsdelivr.net/npm/gif.js@0.2.0/dist/gif.js"></script>
+</head>
+<body>
+    <h1>Convert MP4 Video to GIF</h1>
+
+    <input type="file" id="videoInput" accept="video/mp4">
+    <input type="text" id="outputName" placeholder="Enter output GIF name">
+    <button id="convertButton">Convert to GIF</button>
+
+    <div id="videoContainer">
+        <video id="videoElement" controls style="max-width: 100%; display: none;"></video>
+    </div>
+    <div id="gifPreview"></div>
+
+    <script>
+        class VideoToGifConverter {
+            constructor() {
+                this.canvas = document.createElement('canvas');
+                this.context = this.canvas.getContext('2d');
+            }
+
+            async convert(videoFile) {
+                if (!videoFile || videoFile.type !== 'video/mp4') {
+                    throw new Error('Invalid video file. Please select an MP4 file.');
+                }
+
+                const gifEncoder = new GIF({
+                    workers: 2,
+                    quality: 10,
+                });
+
+                return new Promise((resolve, reject) => {
+                    const video = document.getElementById('videoElement');
+                    video.src = URL.createObjectURL(videoFile);
+                    video.style.display = 'block';
+
+                    video.addEventListener('loadeddata', () => {
+                        this.canvas.width = video.videoWidth;
+                        this.canvas.height = video.videoHeight;
+                        gifEncoder.setOptions({
+                            width: video.videoWidth,
+                            height: video.videoHeight
+                        });
+
+                        video.play();
+
+                        const captureFrame = () => {
+                            if (!video.paused && !video.ended) {
+                                this.context.drawImage(video, 0, 0);
+                                gifEncoder.addFrame(this.context, { copy: true, delay: 100 });
+                                setTimeout(captureFrame, 100); // Capture frame every 100ms
+                            } else {
+                                gifEncoder.render();
+                            }
+                        };
+
+                        captureFrame();
+                    });
+
+                    gifEncoder.on('finished', (blob) => {
+                        const gifUrl = URL.createObjectURL(blob);
+                        resolve(gifUrl);
+                    });
+
+                    video.addEventListener('error', (e) => {
+                        reject(new Error('Error loading video: ' + e.message));
+                    });
+                });
+            }
+
+            saveGif(gifUrl, outputGifPath) {
+                const a = document.createElement('a');
+                a.href = gifUrl;
+                a.download = outputGifPath;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+
+                const img = document.createElement('img');
+                img.src = gifUrl;
+                document.getElementById('gifPreview').appendChild(img);
+            }
+        }
+
+        document.getElementById('convertButton').addEventListener('click', async () => {
+            const videoInput = document.getElementById('videoInput');
+            const outputGifPath = document.getElementById('outputName').value || 'output.gif';
+
+            if (videoInput.files.length > 0) {
+                const videoFile = videoInput.files[0];
+                const converter = new VideoToGifConverter();
+
+                try {
+                    const gifUrl = await converter.convert(videoFile);
+                    converter.saveGif(gifUrl, outputGifPath);
+                    console.log('GIF created successfully:', gifUrl);
+                } catch (error) {
+                    console.error('Error during conversion:', error);
+                }
+            } else {
+                console.error('Please select a video file.');
+            }
+        });
+    </script>
+</body>
+</html>
+
