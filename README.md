@@ -27,17 +27,18 @@ It would be interesting to be able to use/upload custom BVH files, there is a to
 ## Further free resources
 
 - [Rokoko studio](https://www.rokoko.com/products/studio/download) (free version available) for motion captur
-- [BVH archive](https://sites.google.com/a/cgspeed.com/cgspeed/motion-capture?authuser=0)
+- [BVH motion captur datasets](https://sites.google.com/a/cgspeed.com/cgspeed/motion-capture?authuser=0)  (BVH files contain motion captur data)
 - [Adobe Mixamo 3d animator](https://www.mixamo.com/#/?genres=Adventure&page=1&query=walk)
 - [Sketchfab](https://sketchfab.com/search?features=downloadable+animated&q=character+&type=models) - Free 3d characters usable with Mixamo
 - [Audiobox - AI generated speech and audio effects](https://audiobox.metademolab.com/storymaker/demo)
-- [BVH motion caotur datasets](https://sites.google.com/a/cgspeed.com/cgspeed/motion-capture?authuser=0)
+
 
 ## 2d spritesheet generators
 
 - [Vitruvian Studio](https://vitruvianstudio.github.io/)
 - [Universal LPC Spritesheet Generator](https://sanderfrenken.github.io/Universal-LPC-Spritesheet-Character-Generator/#?body=Body_color_light&head=Human_male_light)
 - [LPC character generator (downloadable exe)](https://pflat.itch.io/lpc-character-generator)
+- [Old, abandoned versions of aseprite ](https://www.aseprite.org/older-versions/)(new ones are no more free) (local github mirror: Windows, Mac)
 
 
 ------- ORIGINAL README FILE ----------
